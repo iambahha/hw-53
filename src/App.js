@@ -1,31 +1,37 @@
-import React, {Component} from 'react';
-import AddTaskForm from "./Components/Task/AddTaskForm";
-import Task from "./Components/Task/Task";
-import uuid from "uuid"
+import React, { Component } from "react";
+import TodoInput from "./components/TodoInput";
+import TodoList from "./components/TodoList";
 
+import "bootstrap/dist/css/bootstrap.min.css";
+import uuid from "uuid";
 class App extends Component {
 	state = {
 		items: [],
-		id: 0,
-		item: ''
+		id: uuid(),
+		item: "",
+		editItem: false
 	};
-	handleChange = (e) => {
+	handleChange = e => {
 		this.setState({
 			item: e.target.value
-		})
+		});
 	};
-	handleSubmit = (e) => {
+	handleSubmit = e => {
 		e.preventDefault();
 
 		const newItem = {
 			id: this.state.id,
-			item: this.state.item
+			title: this.state.item
 		};
 
+		const updatedItems = [...this.state.items, newItem];
+
 		this.setState({
+			items: updatedItems,
 			item: "",
 			id: uuid(),
-		})
+			editItem: false
+		});
 	};
 	handleDelete = id => {
 		const filteredItems = this.state.items.filter(item => item.id !== id);
@@ -33,19 +39,22 @@ class App extends Component {
 			items: filteredItems
 		});
 	};
-
-
 	render() {
 		return (
-			<div className="App">
-				<div className="container">
-					<div className="row">
-						<div className="col-10 mx-auto col-md-auto mt-4">
-							<h3 className="mainText">To Do List</h3>
-							<AddTaskForm item={this.state.item} handleChange={this.handleChange}
-							handleSubmit={this.handleChange}/>
-							<Task/>
-						</div>
+			<div className="container">
+				<div className="row">
+					<div className="col-10 mx-auto col-md-8 mt-4">
+						<h3 className="text-capitalize text-center">todo input</h3>
+						<TodoInput
+							item={this.state.item}
+							handleChange={this.handleChange}
+							handleSubmit={this.handleSubmit}
+							editItem={this.state.editItem}
+						/>
+						<TodoList
+							items={this.state.items}
+							handleDelete={this.handleDelete}
+						/>
 					</div>
 				</div>
 			</div>
